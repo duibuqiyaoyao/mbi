@@ -1,0 +1,198 @@
+<!--  修订时间2025/3/28  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小谢-随机小姐姐视频</title>
+    <link rel="stylesheet" type="text/css" href="css/style.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+
+    <div id="initial-loader">
+        <div class="loader-content">
+            <div class="loader-gif"></div>
+            <div class="loader-text"> </div>
+        </div>
+    </div>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <video id="videoPlayer" controls muted playsinline>
+                <source id="videoSource" src="" type="video/mp4">
+                您的浏览器不支持视频标签～
+            </video>
+        </div>
+    </div>
+    <button id="playButton" style="display:none;">点击播放</button>
+    <div class="info-card">
+        <div>
+            <span id="totalVideos">加载中...</span>
+            <span>视频数量</span>
+        </div>
+        <div>
+            <span id="currentVideoId">加载中...</span>
+            <span>当前视频ID</span>
+        </div>
+        <div>
+            <span id="totalPlayCount">加载中...</span>
+            <span>总播放量</span>
+        </div>
+    </div>
+    <div class="input-card">
+        <input type="number" id="specifyIdInput" placeholder="输入视频ID" min="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+        <button onclick="playSpecifiedVideo()">播放指定ID</button>
+        <button class="next-button" onclick="loadNextVideo()">下个视频</button>
+    </div>
+
+    <script>
+        let totalVideos = 0;
+        let currentVideoId = 0;
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playButton = document.getElementById('playButton');
+        const initialLoader = document.getElementById('initial-loader');
+        function hideLoader() {
+            initialLoader.classList.add('loader-hidden');
+            setTimeout(() => {
+                initialLoader.style.display = 'none';
+            }, 500);
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    videoPlayer.play().then(() => {
+                        console.log('视频自动播放成功');
+                        videoPlayer.muted = false;
+                    }).catch(error => {
+                        console.log('自动播放被阻止:', error);
+                    });
+                } else {
+                    videoPlayer.pause();
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        observer.observe(videoPlayer);
+
+        function loadNextVideo() {
+            fetch('https://api.microku.cn/api/cutie')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        //console.log('Video URL:', data.data.video_url);
+                        document.getElementById('videoSource').src = data.data.video_url;
+                        videoPlayer.load();
+
+                        totalVideos = data.data.total_videos;
+                        currentVideoId = data.data.id;
+
+                        document.getElementById('totalVideos').textContent = totalVideos;
+                        document.getElementById('currentVideoId').textContent = currentVideoId;
+                        document.getElementById('totalPlayCount').textContent = data.data.total_play_count || 0;
+
+                        videoPlayer.oncanplay = function() {
+                            hideLoader();
+                            videoPlayer.play().then(() => {
+                                console.log('视频自动播放成功');
+                                videoPlayer.muted = false;
+                            }).catch(error => {
+                                console.log('自动播放被阻止，显示播放按钮');
+                                playButton.style.display = 'block';
+
+                                setTimeout(() => {
+                                    const confirmPlay = confirm('视频已加载，是否播放声音？');
+                                    if (confirmPlay) {
+                                        videoPlayer.muted = false;
+                                        videoPlayer.play();
+                                        playButton.style.display = 'none';
+                                    }
+                                }, 1000);
+                            });
+                        };
+                    } else {
+                        console.error('获取视频时出错:', data.msg);
+                        hideLoader();
+                    }
+                })
+                .catch(error => {
+                    console.error('获取视频时出错:', error);
+                    hideLoader();
+                });
+        }
+
+        function playSpecifiedVideo() {
+            const specifiedId = parseInt(document.getElementById('specifyIdInput').value);
+            
+            if (!specifiedId || specifiedId === 0) {
+                alert('无效ID: ID不能为0或空');
+                return;
+            }
+            
+            if (totalVideos > 0 && specifiedId > totalVideos) {
+                alert(`无效ID: 最大视频ID为${totalVideos}`);
+                return;
+            }
+
+            fetch(`https://api.microku.cn/api/cutie/?id=${specifiedId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        //console.log('Specified Video URL:', data.data.video_url);
+                        document.getElementById('videoSource').src = data.data.video_url;
+                        videoPlayer.load();
+
+                        currentVideoId = data.data.id;
+                        document.getElementById('currentVideoId').textContent = currentVideoId;
+                        document.getElementById('totalPlayCount').textContent = data.data.total_play_count || 0;
+
+                        videoPlayer.play().then(() => {
+                            console.log('视频自动播放成功');
+                        }).catch(error => {
+                            console.log('自动播放被阻止，显示播放按钮');
+                            playButton.style.display = 'block';
+                        });
+                    } else {
+                        console.error('获取指定视频时出错:', data.msg);
+                        alert('获取视频失败: ' + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('获取指定视频时出错:', error);
+                    alert('获取视频时出错，请稍后再试');
+                });
+        }
+
+        // 初始加载
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            setTimeout(loadNextVideo, 500);
+            setTimeout(hideLoader, 5000);
+        });
+
+        document.getElementById('specifyIdInput').addEventListener('input', function (event) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        videoPlayer.addEventListener('ended', function() {
+            loadNextVideo();
+        });
+
+        playButton.addEventListener('click', () => {
+            videoPlayer.play();
+            videoPlayer.muted = false;
+            playButton.style.display = 'none';
+        });
+
+        document.addEventListener('click', () => {
+            if (videoPlayer.muted) {
+                videoPlayer.muted = false;
+                videoPlayer.play();
+            }
+        });
+    </script>
+</body>
+</html>

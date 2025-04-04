@@ -1,0 +1,187 @@
+    /* 重置页面基本样式 */
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 95%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+    }
+
+    /* 视频容器样式 */
+    .video-container {
+        width: 85%;
+        max-width: 800px;
+        border-radius: 13px;
+        overflow: hidden;
+        position: relative;
+        background-color: #000;
+        border: 4px solid #000;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5),
+                    0 0 40px rgba(0, 0, 0, 0.3),
+                    0 0 60px rgba(0, 0, 0, 0.1);
+        margin-top: 15px;
+    }
+
+    /* 视频包装器（用于剪切圆角） */
+    .video-wrapper {
+        width: 100%;
+        height: 100%;
+        clip-path: inset(0 0 0 0 round 15px);
+        overflow: hidden;
+    }
+
+    /* 视频元素本身 */
+    video {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+    /* 通用按钮样式 */
+    .next-button {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .next-button:hover {
+        background-color: #0056b3;
+    }
+
+    /* 信息卡片样式 - 添加毛玻璃效果 */
+    .info-card {
+        margin-top: 20px;
+        padding: 15px 15px;
+        background-color: rgba(248, 249, 250, 0.8);
+        border-radius: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 87%;
+        max-width: 800px;
+        border: 2px solid rgba(100, 100, 100, 0.3);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(44, 44, 44, 0.3),
+                    inset 0 0 10px rgba(255, 255, 255, 0.2);
+        box-sizing: border-box;
+    }
+
+    /* 信息卡片内部div样式 */
+    .info-card div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-width: 100px;
+    }
+
+    /* 信息卡片文字样式 */
+    .info-card div span {
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* 输入卡片样式 */
+    .input-card {
+        margin-top: 20px;
+        padding: 15px 15px;
+        background-color: rgba(248, 249, 250, 0.8);
+        border-radius: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 87%;
+        max-width: 800px;
+        border: 2px solid rgba(100, 100, 100, 0.3);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(44, 44, 44, 0.3),
+                    inset 0 0 10px rgba(255, 255, 255, 0.2);
+        box-sizing: border-box;
+    }
+
+    /* 输入框样式 */
+    .input-card input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 70px;
+        margin-right: 8px;
+    }
+
+    /* 输入卡片内的按钮 */
+    .input-card button {
+        padding: 10px 15px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 8px;
+        white-space: nowrap;
+    }
+    .input-card button:hover {
+        background-color: #0056b3;
+    }
+
+    /* 播放按钮特殊样式 */
+    #playButton {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #playButton:hover {
+        background-color: #218838;
+    }
+
+    /* 加载动画样式 - 绝对定位 */
+    #initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .loader-content {
+        text-align: center;
+    }
+
+    .loader-gif {
+        width: 260px;
+        height: 260px;
+        background-image: url('https://api.microku.cn/assets/img/0180ad5be4ff70a80120925291ece7.gif');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin: 0 auto;
+    }
+
+    .loader-text {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    /* 隐藏加载动画 */
+    .loader-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
